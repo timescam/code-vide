@@ -2,7 +2,7 @@
 	"name": "code-vide",
 	"displayName": "CodeVide",
 	"description": "Vscode extension that mimics the behavior of the Bionic Reading API. Inspired by TextVide.",
-	"version": "0.1.3",
+	"version": "0.2.0",
 	"publisher": "timescam",
 	"icon": "docs/logo.png",
 	"galleryBanner": {
