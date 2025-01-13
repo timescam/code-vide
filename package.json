@@ -1,0 +1,104 @@
+{
+	"name": "code-vide",
+	"displayName": "CodeVide",
+	"description": "Vscode extension that mimics the behavior of the Bionic Reading API. Inspired by TextVide.",
+	"version": "0.1.3",
+	"publisher": "timescam",
+	"icon": "docs/logo.png",
+	"galleryBanner": {
+		"color": "#0098FF",
+		"theme": "dark"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/timescam/code-vide",
+	"bugs": {
+		"url": "https://github.com/timescam/code-vide/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/timescam/code-vide.git"
+	},
+	"engines": {
+		"vscode": "^1.85.0"
+	},
+	"categories": [
+		"Visualization"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "code-vide.toggle",
+				"title": "CodeVide: Toggle"
+			}
+		],
+		"configuration": {
+			"title": "CodeVide",
+			"properties": {
+				"codeVide.enabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable/disable CodeVide"
+				},
+				"codeVide.sep": {
+					"type": [
+						"string",
+						"array"
+					],
+					"items": {
+						"type": "string"
+					},
+					"description": "Separator to use before and after the bold part. Can be a single string or an array of [prefix, suffix].",
+					"default": ""
+				},
+				"codeVide.fixationPoint": {
+					"type": "number",
+					"description": "Controls how much of each word is bold. Level 1 bolds larger chunks (best for quick reading), while Level 5 uses minimal bolding (best for careful reading).",
+					"default": 1,
+					"minimum": 1,
+					"maximum": 5
+				},
+				"codeVide.extraContrast": {
+					"type": "boolean",
+					"description": "Whether to set the later half of text to thin for extra contrast.",
+					"default": false
+				},
+				"codeVide.debounceDelay": {
+					"type": "number",
+					"default": 150,
+					"minimum": 0,
+					"maximum": 1000,
+					"description": "Delay in milliseconds before updating the text decorations after changes. Do not change this value unless you know what you are doing."
+				},
+				"codeVide.currentLineOnly": {
+					"type": "boolean",
+					"default": false,
+					"description": "Only apply decorations to the current cursor line."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "pnpm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "pnpm run compile && pnpm run lint",
+		"lint": "eslint src",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/mocha": "^10.0.10",
+		"@types/node": "20.x",
+		"@types/vscode": "^1.85.0",
+		"@typescript-eslint/eslint-plugin": "^8.17.0",
+		"@typescript-eslint/parser": "^8.17.0",
+		"@vscode/test-cli": "^0.0.10",
+		"@vscode/test-electron": "^2.4.1",
+		"@vscode/vsce": "^3.2.1",
+		"eslint": "^9.16.0",
+		"typescript": "^5.7.2"
+	}
+}
