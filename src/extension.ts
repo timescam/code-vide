@@ -1,11 +1,14 @@
 import * as vscode from 'vscode';
 
+import * as textMatcher from './textMatcher'
+
 let boldDecorationType: vscode.TextEditorDecorationType;
 let thinDecorationType: vscode.TextEditorDecorationType;
 
-// Optimized regex pattern for word matching
-const WORD_REGEX = /\b\w+\b/g;
 const BATCH_SIZE = 10000; // Increased batch size for better performance
+
+// Keep in sync with the "codeVide.spacers" default in package.json
+const DEFAULT_SPACERS = [" ", "_", "-", ".", ",", ";", ":", "(", ")", "[", "]", "{", "}", "<", ">", "=", "\"", "'", "$camel"];
 
 // Cache for decorations to avoid unnecessary updates
 const decorationCache = new Map<string, {
@@ -18,6 +21,7 @@ let configCache = {
     prefix: '',
     suffix: '',
     fixationLevel: 1,
+    spacers: DEFAULT_SPACERS,
     extraContrast: true,
     debounceDelay: 150,
     enabled: true,
@@ -52,6 +56,7 @@ function updateConfigCache() {
     configCache.fixationLevel = config.get<number>('fixationPoint') ?? 1;
     configCache.extraContrast = config.get<boolean>('extraContrast') ?? false;
     configCache.debounceDelay = config.get<number>('debounceDelay') ?? 150;
+    configCache.spacers = config.get<string[]>('spacers') ?? DEFAULT_SPACERS;
     configCache.enabled = config.get<boolean>('enabled') ?? true;
     configCache.currentLineOnly = config.get<boolean>('currentLineOnly') ?? false;
     fixationCache.clear();
@@ -120,12 +125,13 @@ function processTextChunk(
     const startPos = editor.document.positionAt(startOffset);
     const lineOffset = startPos.line;
 
-    WORD_REGEX.lastIndex = 0;
+    let _text_matcher = new textMatcher.TextMatcher(text,configCache.spacers);
+    
     let match;
 
-    while ((match = WORD_REGEX.exec(text)) !== null) {
-        const wordStart = startOffset + match.index;
-        const wordLength = match[0].length;
+    while ((match = _text_matcher.next()) !== null) {
+        const wordStart  = startOffset + match.index;
+        const wordLength = match.length;
         const splitPoint = getFixationPoint(wordLength);
 
         if (splitPoint > 0) {
